@@ -1,1 +1,1 @@
-![Alt Text](database_er_diagram.png)
+![Airbnb databse ER Diagram](database_er_diagram.png)
