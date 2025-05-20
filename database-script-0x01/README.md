@@ -1,8 +1,15 @@
--- ==============================================
--- AIRBNB DATABASE SCHEMA (3NF OPTIMIZED)
--- ==============================================
 
--- Core Tables
+# 🏠 Airbnb Database Schema (3NF Optimized)
+
+## 📌 Overview
+This schema defines a relational database structure for an Airbnb-style booking application. It follows **Third Normal Form (3NF)** to avoid data redundancy and ensure efficient queries.
+
+---
+
+## 👤 Users Table
+Stores information about users: guests, hosts, and admins.
+
+```sql
 CREATE TABLE users (
     user_id UUID PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -13,8 +20,14 @@ CREATE TABLE users (
     role VARCHAR(10) NOT NULL CHECK (role IN ('guest', 'host', 'admin')),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+```
 
--- Normalized Location Table
+---
+
+## 🌍 Locations Table
+Holds detailed address information.
+
+```sql
 CREATE TABLE locations (
     location_id UUID PRIMARY KEY,
     address_line1 VARCHAR(100) NOT NULL,
@@ -24,8 +37,14 @@ CREATE TABLE locations (
     country VARCHAR(50) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+```
 
--- Properties with Location FK
+---
+
+## 🏡 Properties Table
+Stores all listed properties.
+
+```sql
 CREATE TABLE properties (
     property_id UUID PRIMARY KEY,
     host_id UUID NOT NULL REFERENCES users(user_id),
@@ -36,8 +55,14 @@ CREATE TABLE properties (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CHECK (updated_at >= created_at)
 );
+```
 
--- Normalized Pricing Table
+---
+
+## 💵 Pricing Table
+Details the price per property.
+
+```sql
 CREATE TABLE pricing (
     pricing_id UUID PRIMARY KEY,
     property_id UUID NOT NULL REFERENCES properties(property_id),
@@ -50,8 +75,14 @@ CREATE TABLE pricing (
     valid_to DATE,
     CHECK (valid_to IS NULL OR valid_to > valid_from)
 );
+```
 
--- Bookings
+---
+
+## 📅 Bookings Table
+Tracks each guest booking.
+
+```sql
 CREATE TABLE bookings (
     booking_id UUID PRIMARY KEY,
     property_id UUID NOT NULL REFERENCES properties(property_id),
@@ -63,16 +94,28 @@ CREATE TABLE bookings (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CHECK (end_date > start_date)
 );
+```
 
--- Payment Methods (New 3NF Table)
+---
+
+## 💳 Payment Methods Table
+Stores types of payments available.
+
+```sql
 CREATE TABLE payment_methods (
     payment_method_id UUID PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     processing_fee DECIMAL(5, 2) DEFAULT 0
 );
+```
 
--- Payments
+---
+
+## 🧾 Payments Table
+Logs all payment transactions.
+
+```sql
 CREATE TABLE payments (
     payment_id UUID PRIMARY KEY,
     booking_id UUID NOT NULL REFERENCES bookings(booking_id),
@@ -82,8 +125,14 @@ CREATE TABLE payments (
     status VARCHAR(20) NOT NULL CHECK (status IN ('paid', 'failed', 'refunded', 'pending')),
     transaction_id VARCHAR(100)
 );
+```
 
--- Reviews
+---
+
+## 🌟 Reviews Table
+Guests can rate and comment on properties.
+
+```sql
 CREATE TABLE reviews (
     review_id UUID PRIMARY KEY,
     property_id UUID NOT NULL REFERENCES properties(property_id),
@@ -92,8 +141,14 @@ CREATE TABLE reviews (
     comment TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+```
 
--- Messages
+---
+
+## 💬 Messages Table
+Stores chat messages between users.
+
+```sql
 CREATE TABLE messages (
     message_id UUID PRIMARY KEY,
     sender_id UUID NOT NULL REFERENCES users(user_id),
@@ -102,11 +157,14 @@ CREATE TABLE messages (
     sent_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_read BOOLEAN NOT NULL DEFAULT FALSE
 );
+```
 
--- ==============================================
--- OPTIMIZATION: INDEXES
--- ==============================================
+---
 
+## ⚙️ Indexes
+Indexes help speed up queries.
+
+```sql
 -- Users
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
@@ -138,3 +196,4 @@ CREATE INDEX idx_reviews_user ON reviews(user_id);
 CREATE INDEX idx_messages_sender ON messages(sender_id);
 CREATE INDEX idx_messages_recipient ON messages(recipient_id);
 CREATE INDEX idx_messages_timestamp ON messages(sent_at);
+```
