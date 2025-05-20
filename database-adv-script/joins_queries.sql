@@ -50,20 +50,22 @@ ON b.user_id = u.user_id;
 -- It uses a LEFT JOIN to combine the properties and reviews tables based on the property_id.
 
 SELECT 
-    p.property_id,
-    p.name AS property_name,
-    p.description,
-    r.review_id,
-    r.rating,
-    r.comment
-FROM properties p
-LEFT JOIN reviews r
-ON p.property_id = r.property_id;
+    properties.property_id,
+    properties.name AS property_name,
+    properties.description,
+    reviews.review_id,
+    reviews.rating,
+    reviews.comment
+FROM properties
+LEFT JOIN reviews
+ON properties.property_id = reviews.property_id
+ORDER BY properties.property_id;
 
 --Explanation of the above LEFT JOIN query:
 -- FROM properties p: Start with the properties table (aliased as p).
 -- LEFT JOIN reviews r: Join with the reviews table (aliased as r).
 -- ON p.property_id = r.property_id: Matches rows where property_id in properties equals property_id in reviews
+
 
 
 --FULL OUTER JOIN

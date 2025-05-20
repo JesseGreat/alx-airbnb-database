@@ -56,16 +56,17 @@ Get all properties and their reviews, including properties that have no reviews.
 ### Example: Retrieve all properties and their reviews
 
 ```sql
-SELECT 
-    p.property_id,
-    p.name AS property_name,
-    p.description,
-    r.review_id,
-    r.rating,
-    r.comment
-FROM properties p
-LEFT JOIN reviews r
-ON p.property_id = r.property_id;
+SSELECT 
+    properties.property_id,
+    properties.name AS property_name,
+    properties.description,
+    reviews.review_id,
+    reviews.rating,
+    reviews.comment
+FROM properties
+LEFT JOIN reviews
+ON properties.property_id = reviews.property_id
+ORDER BY properties.property_id;
 ```
 
 ### Explanation:
