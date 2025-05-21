@@ -1,6 +1,6 @@
 /* This script was based on the database ERD diagram from the Airbnb project.
 then we will be talking about the different types of joins in SQL and how to use them effectively.
-The script contains examples of INNER JOIN, LEFT JOIN, RIGHT JOIN, and FULL OUTER JOIN queries.
+The script contains examples of INNER JOIN, LEFT JOIN and FULL OUTER JOIN queries.
 */
 -- INNER JOIN
 -- INNER JOIN: Retrieve All Bookings with User Information
